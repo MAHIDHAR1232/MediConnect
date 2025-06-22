@@ -1,0 +1,120 @@
+{% extends 'users/base.html' %}
+{% load static %}
+
+{% block title %} View Appointments {% endblock title %}
+{% block page_title %} View Appointments {% endblock page_title %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/viewappointments.css' %}">
+
+<main>
+  <section class="recent">
+    <div class="card">
+      <div class="filter-section">
+        <form method="get">
+          <div>
+            <label for="filter_status">Status:</label>
+            <select name="filter_status" id="filter_status">
+              <option value="" {% if not filter_status or filter_status == 'All' %}selected{% endif %}>All</option>
+              <option value="Accepted" {% if filter_status == "Accepted" %}selected{% endif %}>Accepted</option>
+              <option value="Waited" {% if filter_status == "Waited" %}selected{% endif %}>Waited</option>
+              <option value="Cancelled" {% if filter_status == "Cancelled" %}selected{% endif %}>Cancelled</option>
+            </select>
+          </div>
+          <div>
+            <label for="filter_date">Date:</label>
+            <input type="date" name="filter_date" id="filter_date" value="{{ filter_date }}">
+          </div>
+          <div>
+            <label for="filter_patient_name">Patient Name:</label>
+            <input type="text" name="filter_patient_name" id="filter_patient_name" value="{% if filter_patient_name is not None %}{{ filter_patient_name }}{% endif %}">
+          </div>
+          <div>
+            <button type="submit">Search</button>
+          </div>
+        </form>
+      </div>
+      
+      <table>
+        <thead>
+          <tr>
+            <th>Patient Name</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Status</th>
+            <th>Description</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for appointment in appointments %}
+          <tr>
+            <td>{{ appointment.patient.user.first_name }}</td>
+            <td>{{ appointment.start_date }}</td>
+            <td>{{ appointment.time.time }}</td>
+
+            <td class="status">
+                <span class="{% if appointment.status.status == 'Accepted' %}accepted
+                              {% elif appointment.status.status == 'Waited' %}waited
+                              {% elif appointment.status.status == 'Cancelled' %}cancelled
+                              {% endif %}">
+                  {{ appointment.status.status }}
+                </span>
+              </td>
+              
+
+           
+            <td>{{ appointment.description|truncatechars:90  }}</td>
+            <td><button class="view-btn" onclick="document.getElementById('viewModal{{ appointment.id }}').style.display='block'">View</button></td>
+          </tr>
+
+<div id="modalOverlay" class="modal-overlay"></div>
+
+<!-- Modal -->
+<div id="viewModal{{ appointment.id }}" class="modal">
+  <h5>Appointment Details</h5>
+  <ul>
+    <li><strong>Appointment Date:</strong> {{ appointment.start_date }} , {{ appointment.time.time }}</li>
+    <li><strong>Summary:</strong> {{ appointment.summary }}</li>
+    <li><strong>Description:</strong> {{ appointment.description}}</li>
+  </ul>
+    <form method="post">
+        {% csrf_token %}
+        <label>Status:</label>
+        <select name="status">
+        <option value="Accepted" {% if appointment.status.status == "Accepted" %}selected{% endif %}>Accepted</option>
+        <option value="Waited" {% if appointment.status.status == "Waited" %}selected{% endif %}>Waited</option>
+        <option value="Cancelled" {% if appointment.status.status == "Cancelled" %}selected{% endif %}>Cancelled</option>
+        </select>
+        <input type="hidden" value='{{ appointment.id }}' name="app">
+
+        <div>
+            <button type="submit" class="save-btn">Save</button>
+            <button class="close-btn" onclick="closeModal()">Close</button>    
+        </div>
+       
+    </form>
+        </div>
+
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+
+<script>
+    
+
+
+function closeModal() {
+  document.getElementById('modalOverlay').style.display = 'none';
+  document.querySelectorAll('.modal').forEach(modal => {
+    modal.style.display = 'none';
+  });
+}
+
+</script>
+{% endblock %}

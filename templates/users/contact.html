@@ -1,0 +1,104 @@
+{% extends 'users/base.html' %}
+{% block title %}Contact Us | MediConnect {% endblock %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/contact.css' %}">
+
+<div class="topcontainer">
+    <div class="contact-us-header">
+        <h1>Contact Us</h1>
+    </div>
+  
+  <div class="contact-container">
+    <div class="map-container">
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2834.3472167653317!2d-122.0842496840933!3d37.42199977982529!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x808fbbd2112b0fd5%3A0x3e6e74161c9c5355!2sGoogleplex!5e0!3m2!1sen!2sus!4v1614153126489!5m2!1sen!2sus" 
+              width="100%" height="78%" style="border:0;" allowfullscreen="" loading="lazy" title="Map showing Hospital Location"></iframe>
+              <div class="contact-info">
+                <div class="info-item">
+                  <i class="fas fa-phone-alt"></i>
+                  <span>+1 234 567 890</span>
+                </div>
+                <div class="info-item">
+                  <i class="fas fa-envelope"></i>
+                  <span>contact@mediconnect.com</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Dharan-10, Sunsari</span>
+                  </div>
+              </div>
+            </div>
+
+    <div class="form-container">
+      <form method="POST" class="needs-validation" novalidate="" autocomplete="off" id="contactForm">
+        {% csrf_token %}
+
+        {% if messages %}
+          {% for message in messages %}
+            {% if 'success' in message.tags %}
+              <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% elif 'error' in message.tags %}
+              <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% else %}
+              <div class="alert alert-info alert-dismissible fade show mt-3" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+
+        <div class="mb-3">
+          <label class="mb-2 text-muted" for="name">Full Name</label>
+          <input id="name" type="text" class="form-control" name="name" required />
+        </div>
+
+        <div class="mb-3">
+          <label class="mb-2 text-muted" for="email">E-mail Address</label>
+          <input id="email" type="email" class="form-control" name="email" required />
+        </div>
+
+        <div class="mb-3">
+          <label class="mb-2 text-muted" for="subject">Subject</label>
+          <input id="subject" type="text" class="form-control" name="subject" required />
+        </div>
+
+        <div class="mb-3">
+          <label class="mb-2 text-muted" for="message">Message</label>
+          <textarea id="message" class="form-control" name="message" rows="4" required></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-contact mt-3">Send Message</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    'use strict'
+
+    var forms = document.querySelectorAll('.needs-validation')
+    Array.prototype.slice.call(forms)
+      .forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+          if (!form.checkValidity()) {
+            event.preventDefault()
+            event.stopPropagation()
+          }
+          form.classList.add('was-validated')
+        }, false)
+      })
+  })()
+</script>
+
+
+{% endblock content %}

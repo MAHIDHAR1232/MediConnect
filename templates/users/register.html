@@ -1,0 +1,159 @@
+{% extends 'users/base.html' %}
+{% block title %}Register | MediConnect{% endblock title %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/register.css' %}">
+
+<div class="topcontainer">
+  <div class="register-container">
+    <h1>Register</h1>
+
+    <form method="POST" class="needs-validation" novalidate="" autocomplete="off" enctype="multipart/form-data" id="registerForm">
+      {% csrf_token %}
+
+      {% if messages %}
+      {% for message in messages %}
+      {% if 'success' in message.tags %}
+      <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {% elif 'error' in message.tags %}
+      <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {% else %}
+      <div class="alert alert-info alert-dismissible fade show mt-3" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {% endif %}
+      {% endfor %}
+      {% endif %}
+
+      <input type="hidden" name="user_config" value="Patient" />
+
+      <div class="mb-3">
+        <label class="mb-2 text-muted" for="id_user">Username</label>
+        <input id="id_user" type="text" class="form-control" name="user_id" value="{{ user_id }}" required autofocus />
+        <div class="invalid-feedback error-message">Username is required</div>
+      </div>
+
+      <div class="mb-3">
+        <label class="mb-2 text-muted" for="first_name">Full Name</label>
+        <input id="first_name" type="text" class="form-control" name="user_firstname" value="{{ user_firstname }}" required />
+        <div class="invalid-feedback error-message">Full Name is required</div>
+      </div>
+
+      <div class="mb-3">
+        <label class="mb-2 text-muted" for="select_gender">Gender</label>
+        <select class="form-select" aria-label="Select gender" name="user_gender" id="select_gender">
+          <option value="Male" {% if user_gender == 'Male' %}selected{% endif %}>Male</option>
+          <option value="Female" {% if user_gender == 'Female' %}selected{% endif %}>Female</option>
+        </select>
+        <div class="invalid-feedback error-message">Please select a gender</div>
+      </div>
+
+      <div class="mb-3">
+        <label class="mb-2 text-muted" for="email">E-mail Address</label>
+        <input id="email" type="email" class="form-control" name="email" value="{{ email }}" required />
+        <div class="invalid-feedback error-message">Email is invalid</div>
+      </div>
+
+      <div class="mb-3 password-container">
+        <label class="mb-2 text-muted" for="password">Password</label>
+        <input id="password" type="password" class="form-control" name="password" required />
+        <i id="togglePassword" class="fa fa-eye eye-icon"></i>
+        <div class="invalid-feedback error-message">Password is required</div>
+      </div>
+
+      <p class="form-text text-muted mb-3">
+        By registering you agree with our terms and conditions.
+      </p>
+
+      <button type="submit" class="btn btn-register mt-3">Register</button>
+    </form>
+
+    <a href="{% url 'login' %}" class="signup-link">Already have an account? Login</a>
+  </div>
+</div>
+
+<script>
+  (function () {
+    'use strict'
+
+    var forms = document.querySelectorAll('.needs-validation')
+    Array.prototype.slice.call(forms)
+      .forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+          if (!form.checkValidity()) {
+            event.preventDefault()
+            event.stopPropagation()
+          }
+          form.classList.add('was-validated')
+        }, false)
+      })
+  })()
+
+  document.getElementById('registerForm').addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    const errorMessages = document.querySelectorAll('.error-message');
+    errorMessages.forEach(function (message) {
+      message.style.display = 'none';
+    });
+
+    let valid = true;
+    const username = document.getElementById('id_user');
+    const firstName = document.getElementById('first_name');
+    const email = document.getElementById('email');
+    const password = document.getElementById('password');
+    const gender = document.getElementById('select_gender');
+
+    if (!username.value) {
+      document.querySelector('#id_user + .error-message').style.display = 'block';
+      valid = false;
+    }
+
+    if (!firstName.value) {
+      document.querySelector('#first_name + .error-message').style.display = 'block';
+      valid = false;
+    }
+
+    if (!email.value) {
+      document.querySelector('#email + .error-message').style.display = 'block';
+      valid = false;
+    }
+
+    if (!password.value) {
+      document.querySelector('#password + .error-message').style.display = 'block';
+      valid = false;
+    }
+
+    if (!gender.value) {
+      document.querySelector('#select_gender + .error-message').style.display = 'block';
+      valid = false;
+    }
+
+    if (valid) {
+      this.submit();
+    }
+  });
+
+  const togglePassword = document.getElementById('togglePassword');
+  const passwordField = document.getElementById('password');
+
+  togglePassword.addEventListener('click', function () {
+   
+    const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+    passwordField.setAttribute('type', type);
+
+    this.classList.toggle('fa-eye');
+    this.classList.toggle('fa-eye-slash');
+  });
+</script>
+
+{% endblock content %}

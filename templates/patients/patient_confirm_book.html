@@ -1,0 +1,67 @@
+{% extends 'users/base.html' %}
+{% load static %}
+
+{% block title %} Dashboard {% endblock title %}
+{% block page_title %} Patient Dashboard {% endblock page_title %}
+{% block content %}
+<main>
+  <h2 class="dash-title">Appointment Booking Confirmation</h2>
+  <section class="recent">
+    <div class="table-div">
+      <div class="container">
+        <div class="row">
+          <div class="form-wrapper">
+            <div class="col-12">
+              <h3 class="doctor-name"><i class="fas fa-user-md"></i> Doctor: {{ doctor.user.last_name }} {{ doctor.user.first_name }}</h3>
+            </div>
+            <form method="POST" class="needs-validation" novalidate autocomplete="off" enctype="multipart/form-data">
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="first-name">First Name:</label>
+                <input type="text" name="foname" id="first-name" value="{{ request.user.first_name }}" disabled />
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="dates"><i class="fas fa-calendar-day"></i> Select Date:</label>
+                  <input type="date" id="dates" name="date" value="{{ now|date:'Y-m-d' }}" required />
+
+                </div>
+                <div class="form-group">
+                  <label for="times"><i class="fas fa-clock"></i> Select Time:</label>
+                  <select name="time">
+                    {% for time in times %}
+                      <option value="{{ time.time }}">{{ time.time }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="spec">Summary:</label>
+                <input type="text" name="summary" id="spec" required />
+              </div>
+
+              <div class="form-group">
+                <label for="message">Description:</label>
+                <textarea id="message" name="description"></textarea>
+              </div>
+
+              <button type="submit" class="btn-success"><i class="fas fa-check-circle"></i> Book Appointment</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<link rel="stylesheet" href="{% static 'css/patient_confirm_book.css' %}">
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var today = new Date().toISOString().split('T')[0]; 
+    document.getElementById('dates').value = today; 
+  });
+</script>
+
+{% endblock %}

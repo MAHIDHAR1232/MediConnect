@@ -1,0 +1,87 @@
+{% extends 'users/base.html' %}
+{% load static %}
+
+{% block title %} Profile {% endblock title %}
+{% block page_title %} Doctor Profile {% endblock page_title %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+
+  <section class="profile-section">
+    <div class="container" style="width: 50%;">
+      <div class="profile-card">
+        <div class="profile-header">
+          <h2>My Profile</h2>
+          <img src="{{ basicdata.profile_avatar.url }}" class="avatar-profile-img" alt="Profile Avatar">
+        </div>
+
+        <div class="user-info">
+          <div class="info-item">
+            <span class="info-label">Username:</span>
+            <span class="info-value">{{ basicdata.username }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Email:</span>
+            <span class="info-value">{{ basicdata.email }}</span>
+          </div>
+        </div>
+
+        
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+
+          {% if updated_profile_successfully %}
+          <div class="alert alert-success">
+            Profile updated successfully!
+          </div>
+          {% endif %}
+
+          <div class="form-group">
+            <label for="first_name">Full Name</label>
+            <input id="first_name" type="text" name="user_firstname" value="{{ basicdata.first_name }}" required>
+          </div>
+
+          {% if not request.user.is_doctor %}
+          {% else %}
+ 
+          <div class="form-group">
+            <label for="specialty">Specialty</label>
+            <select name="Speciality" required>
+              {% for speciality in specialities %}
+              <option value="{{ speciality.name }}" {% if speciality.name == basicdata.doctors.specialty.name %}selected{% endif %}>
+                {{ speciality.name }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="bio">Bio</label>
+            <textarea id="bio" name="bio" required>{{ basicdata.doctors.bio }}</textarea>
+          </div>
+          {% endif %}
+
+          <div class="form-group">
+            <label for="select_gender">Gender</label>
+            <select name="user_gender" id="select_gender">
+              <option value="Male" {% if basicdata.gender == 'Male' %}selected{% endif %}>Male</option>
+              <option value="Female" {% if basicdata.gender == 'Female' %}selected{% endif %}>Female</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="pic">Profile Avatar</label>
+            <input type="file" name="profile_pic" id="pic">
+          </div>
+
+          <div class="form-group">
+            <button type="submit" name="update_profile">Update Profile</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends 'users/base.html' %}
+
+{% block title %}Forgot Password{% endblock title %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/forgot.css' %}">
+
+<div class="topcontainer">
+  <div class="forgot-password-container">
+    <h1>Forgot Password</h1>
+
+    <form method="POST" class="needs-validation" novalidate autocomplete="off" id="forgotPasswordForm">
+      {% csrf_token %}
+      
+      <div class="mb-3">
+        <label class="mb-2 text-muted" for="email">E-Mail Address</label>
+        <input id="email" type="email" class="form-control" name="email" placeholder="Enter your email" required autofocus />
+        <div class="invalid-feedback error-message">Email is invalid</div>
+      </div>
+
+      <div class="d-flex align-items-center">
+        <button type="submit" class="btn btn-primary ms-auto primary-color-background">
+          Send Password Reset Link
+        </button>
+      </div>
+    </form>
+
+    <a href="{% url 'login' %}" class="forgot-password-link">Remember your password? Login</a>
+  </div>
+</div>
+
+<script>
+  document.getElementById('forgotPasswordForm').addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    const errorMessages = document.querySelectorAll('.error-message');
+    errorMessages.forEach(function (message) {
+      message.style.display = 'none';
+    });
+
+    let valid = true;
+    const email = document.getElementById('email');
+
+    if (!email.value || !email.validity.valid) {
+      document.querySelector('#email + .error-message').style.display = 'block';
+      valid = false;
+    }
+
+    if (valid) {
+      this.submit();
+    }
+  });
+</script>
+
+{% endblock content %}

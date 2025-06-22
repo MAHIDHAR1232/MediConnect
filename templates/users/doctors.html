@@ -1,0 +1,99 @@
+{% extends 'users/base.html' %}
+{% block title %}Doctors List | MediConnect {% endblock title %}
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctors List | MediConnect </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/doctors.css' %}">
+
+</head>
+<body>
+
+<section id="content">
+    <div class="container">
+        <h2 >Doctors List</h2>
+
+        <!-- Filter Form -->
+        <form method="GET" class="filter-form" id="filterForm">
+            <select name="filter_speciality" id="filter_speciality">
+                <option value="All" {% if filter_speciality == 'All' %}selected{% endif %}>All Specialities</option>
+                {% for speciality in specialities %}
+                    <option value="{{ speciality.name }}" {% if filter_speciality == speciality.name %}selected{% endif %}>{{ speciality.name }}</option>
+                {% endfor %}
+            </select>
+
+            <input type="text" name="filter_doctor_name" id="filter_doctor_name" value="{{ filter_doctor_name|default_if_none:'' }}" placeholder="Search by name">
+
+            <button type="submit">
+                <i class="fa fa-filter"></i> Filter
+            </button>
+            <button type="button" class="reset-btn" onclick="resetForm()">
+                <i class="fa fa-refresh"></i> Reset
+            </button>
+            
+
+            
+        </form>
+
+        <div class="doctors-grid">
+            {% for doctor in doctors %}
+                <div class="doctor-card">
+                    <img src="{{ doctor.user.profile_avatar.url }}" alt="Doctor Image">
+                    
+                    <h5>{{ doctor.user.first_name }} {{ doctor.user.last_name }}</h5>
+                    <p><i class="fa fa-stethoscope"></i> <strong>Specialty:</strong> {{ doctor.specialty.name }}</p>
+                    <p><i class="fa fa-envelope"></i> <strong>Email:</strong> {{ doctor.user.email }}</p>
+                    {% if user.is_authenticated %}
+                        <a href="/patient_confirm_book/{{ doctor.user.username }}/" class="btn-book">Book Appointment</a>
+                    {% else %}
+                        <button class="btn-book" onclick="showPopup()">Book Appointment</button>
+                    {% endif %}
+                </div>
+            {% empty %}
+            <div class="no-doctors-message">
+                <p>No doctors found.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Popup Modal -->
+<div class="popup-overlay" id="popupOverlay">
+    <div class="popup">
+        <h3>⚠ Warning</h3>
+        <p>You need to log in to book an appointment.</p>
+        <div class="popup-buttons">
+            <button class="btn-cancel" onclick="closePopup()">Cancel</button>
+            <a href="{% url 'login' %}" class="btn-login">Login</a>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function resetForm() {
+        document.getElementById('filter_speciality').value = 'All';
+        document.getElementById('filter_doctor_name').value = '';
+        document.getElementById('filterForm').submit();
+    }
+
+    function showPopup() {
+        document.getElementById('popupOverlay').style.display = 'flex';
+    }
+
+    function closePopup() {
+        document.getElementById('popupOverlay').style.display = 'none';
+    }
+</script>
+
+</body>
+</html>
+
+{% endblock content %}

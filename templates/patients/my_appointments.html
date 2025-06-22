@@ -1,0 +1,105 @@
+{% extends 'users/base.html' %}
+{% load static %}
+
+{% block title %} My Appointment {% endblock title %}
+{% block page_title %} Patient Profile {% endblock page_title %}
+
+{% block content %}
+<main class="container" style="width: 90%;">
+    <section class="recent">
+        <div class="filter-section">
+            <form method="get" class="filter-form">
+                <div class="form-group">
+                    <label for="filter_status">Status:</label>
+                    <select name="filter_status" id="filter_status" class="form-control">
+                        <option value="" {% if not filter_status or filter_status == 'All' %}selected{% endif %}>All</option>
+                        <option value="Accepted" {% if filter_status == "Accepted" %}selected{% endif %}>Accepted</option>
+                        <option value="Waited" {% if filter_status == "Waited" %}selected{% endif %}>Waited</option>
+                        <option value="Cancelled" {% if filter_status == "Cancelled" %}selected{% endif %}>Cancelled</option>                  
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="filter_date">Date:</label>
+                    <input type="date" name="filter_date" id="filter_date" class="form-control" value="{{ filter_date }}">
+                </div>
+                <div class="form-group">
+                    <label for="filter_doctor_name">Doctor Name:</label>
+                    <input type="text" name="filter_doctor_name" id="filter_doctor_name" class="form-control" value="{{ filter_doctor_name|default_if_none:''}}">
+                </div>
+                <div class="form-group button-group">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+                <div class="form-group button-group">
+                    <button type="button" class="btn btn-secondary" id="reset-btn">Reset</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="table-div">
+            <div class="table-card">
+                <div class="tab-content pt-0">
+                    <div id="pat_appointments" class="tab-pane fade show active">
+                        <div class="card card-table mb-0">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Doctor</th>
+                                                <th>Appt Date</th>
+                                                <th>Start Time</th>
+                                                <th>Summary</th>
+                                                <th>Description</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for appointment in appointments %}
+                                            <tr>
+                                                <td>
+                                                    <div class="table-avatar">
+                                                        <img class="avatar-img" src="{{ appointment.doctor.user.profile_avatar.url }}" alt="Doctor Avatar">
+                                                        <b>Dr. {{ appointment.doctor.user.first_name }}</b>
+                                                    </div>
+                                                </td>
+                                                <td>{{ appointment.start_date }}</td>
+                                                <td>{{ appointment.time.time }}</td>
+                                                <td>{{ appointment.summary }}</td>
+                                                <td>{{ appointment.description }}</td>
+                                                <td>
+                                                    {% if appointment.status.status == "Accepted" %}
+                                                        <span class="badge badge-success">{{ appointment.status.status }}</span>
+                                                    {% elif appointment.status.status == "Waited" %}
+                                                        <span class="badge badge-warning">{{ appointment.status.status }}</span>
+                                                    {% elif appointment.status.status == "Cancelled" %}
+                                                        <span class="badge badge-danger">{{ appointment.status.status }}</span>
+                                                    {% else %}
+                                                        <span class="badge badge-secondary">{{ appointment.status.status }}</span>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<link rel="stylesheet" href="{% static 'css/my_appointments.css' %}">
+
+<script>
+    document.getElementById('reset-btn').addEventListener('click', function() {
+    document.getElementById('filter_status').selectedIndex = 0;  
+    document.getElementById('filter_date').value = '';  
+    document.getElementById('filter_doctor_name').value = '';  
+    document.querySelector('.filter-form').submit(); 
+});
+</script>
+
+{% endblock %}

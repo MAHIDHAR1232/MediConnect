@@ -1,0 +1,78 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MediConnect</title>
+  <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+
+<link rel="stylesheet" href="{% static 'css/navBar.css' %}">
+
+</head>
+
+<body>
+  <header>
+    <div class="logo">
+    <a class="navbar-brand d-flex align-items-center" >
+      <img src="{% static 'img/mediconnect.png' %}" alt="MediConnect Logo" height="50" class="d-inline-block align-text-top me-3">
+    </a>
+    </div>
+    <nav>
+      <ul style="display: flex; gap: 5px; margin-left: -400px; list-style: none;">
+        <li><a href="{% url 'homeview' %}">Home</a></li>
+        <li><a href="{% url 'serviceview' %}">Services</a></li>
+        <li><a href="{% url 'about_us' %}">About</a></li>
+
+        {% if not request.user.is_authenticated or not request.user.is_doctor %}
+          <li><a href="{% url 'DoctorListview' %}">Doctors/Appointments</a></li>
+        {% endif %}
+
+        {% if request.user.is_authenticated and request.user.is_doctor %}
+          <li><a href="{% url 'view_appointments' %}">Appointment List</a></li>
+        {% else %}
+
+          {% if request.user.is_authenticated %}
+            <li><a href="{% url 'my_appointments' %}">My Appointment</a></li>
+          {% endif %}
+        {% endif %}
+
+        <li><a href="{% url 'contact' %}">Contact</a></li>
+
+      </ul>
+    </nav>
+    
+    {% if user.is_authenticated %}
+    <div class="profile-icon" id="profile-icon"></div>
+    <div class="profile-menu" id="profile-menu">
+      <div class="profile-info">
+        <img src="{{ user.profile_avatar.url }}" alt="Profile" />
+        <div class="profile-text">
+          <p><strong>{{ user.username|truncatechars:10 }}</strong></p>
+          <p class="email"><i class="fas fa-envelope"></i> {{ user.email|truncatechars:20 }}</p>
+        </div>
+      </div>
+      <a href="{% url 'patient_profile' %}" id="profile-btn"><i class="fas fa-user"></i> Profile</a>
+      <a href="{% url 'change_password' %}" id="change-password-btn"><i class="fas fa-lock"></i> Change Password</a>
+      <a href="{% url 'logout' %}" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+    {% else %}
+    <div class="auth-buttons">
+      <a href="{% url 'login' %}">Login</a>
+      <a href="{% url 'register' %}">Register</a>
+    </div>
+    {% endif %}
+  </header>
+
+  <script>
+    const profileIcon = document.getElementById('profile-icon');
+    const profileMenu = document.getElementById('profile-menu');
+  
+    profileIcon.addEventListener('click', () => {
+      profileMenu.style.display = profileMenu.style.display === 'block' ? 'none' : 'block';
+    });
+  </script>
+</body>
+
+</html>

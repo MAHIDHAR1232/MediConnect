@@ -1,0 +1,72 @@
+{% extends 'users/base.html' %}
+{% block title %}Register | MediConnect {% endblock title %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/service.css' %}">
+
+<section id="content">
+    <div class="container content">
+        <div class="about-logo">
+            <h3>Our Best <span class="color">Services</span></h3>
+            <p>Our MediConnect provides exceptional care with top-notch facilities and services to make sure your
+                health is in the best hands.</p>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-4 info-blocks">
+                <i class="icon-info-blocks">🚑</i>
+                <div class="info-blocks-in">
+                    <h3>Emergency Care</h3>
+                    <p>24/7 emergency services available for immediate assistance.</p>
+                </div>
+            </div>
+            <div class="col-sm-4 info-blocks">
+                <i class="icon-info-blocks">🖥️</i>
+                <div class="info-blocks-in">
+                    <h3>Advanced Technology</h3>
+                    <p>Equipped with the latest medical technologies for accurate diagnosis and treatment.</p>
+                </div>
+            </div>
+            <div class="col-sm-4 info-blocks">
+                <i class="icon-info-blocks">💪</i>
+                <div class="info-blocks-in">
+                    <h3>Wellness Programs</h3>
+                    <p>Comprehensive wellness programs to keep you fit and healthy.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service Section -->
+        <div class="service-list">
+            <div class="service-item">
+                <h4>👩‍⚕️ General Checkup</h4>
+                <p>Regular health checkups to monitor your health status.</p>
+            </div>
+            <div class="service-item">
+                <h4>❤️ Cardiology</h4>
+                <p>Expert care for heart-related conditions and surgeries.</p>
+            </div>
+            <div class="service-item">
+                <h4>🦴 Orthopedics</h4>
+                <p>Treatment for bone and joint conditions.</p>
+            </div>
+            <div class="service-item">
+                <h4>👶 Pediatrics</h4>
+                <p>Comprehensive care for children’s health and well-being.</p>
+            </div>
+            <div class="service-item">
+                <h4>🧠 Neurology</h4>
+                <p>Specialized treatment for brain and nervous system disorders.</p>
+            </div>
+            <div class="service-item">
+                <h4>🩻 Radiology</h4>
+                <p>Advanced imaging services for accurate diagnosis.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock content %}
+
