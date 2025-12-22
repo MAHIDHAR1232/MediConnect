@@ -1,1 +1,1 @@
-# MediConnect
+# MediConnect - Django Project
